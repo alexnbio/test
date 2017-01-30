@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+      <tr>
+        <th>Genus</th>
+        <th># of species</th>
+        <th>Last updated</th>
+      </tr>
+      {% for genus in genuses %}
+        <tr>
+            <td>
+                <a href="{{ path('genus_show', {'genusName': genus.name}) }}">
+                    {{ genus.name }}
+                </a>
+            </td>
+        </tr>
+      {% endfor %}
+    </table>
+
+{% endblock body %}
