@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Neuro
  */
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GenusRepository")
  * @ORM\Table(name="genus")
  */
 class Genus {
