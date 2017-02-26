@@ -12,7 +12,7 @@ var NoteSection = React.createClass({
 
     loadNotesFromServer: function() {
         $.ajax({
-            url: '/git_test/aqua_note/web/app_dev.php/genus/octopus/notes',
+            url: this.props.url,
             success: function (data) {
                 this.setState({notes: data.notes});
             }.bind(this)

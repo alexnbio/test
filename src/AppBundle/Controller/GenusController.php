@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use AppBundle\Entity\Genus;
+use AppBundle\Entity\GenusNote;
 
 class GenusController extends Controller
 {
@@ -21,8 +22,16 @@ class GenusController extends Controller
         $genus->setSubFamily('Octopodinae');
         $genus->setSpeciesCount(rand(100, 99999));
         
+        $note = new GenusNote();
+        $note->setUsername('AquaWeaver');
+        $note->setUserAvatarFilename('ryan.jpeg');
+        $note->setNote('I counted 8 legs... as they wrapped around me');
+        $note->setCreatedAt(new \DateTime('-1 month'));
+        $note->setGenus($genus);
+        
         $em    = $this->getDoctrine()->getManager();
         $em->persist($genus);
+        $em->persist($note);
         $em->flush();
         
         return new Response('<html><body>Genus created!</body></html>');
@@ -37,7 +46,7 @@ class GenusController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         $genuses = $em->getRepository('AppBundle:Genus')
-            ->findAllPublishedOrderedBySize();
+            ->findAllPublishedOrderedByRecentlyActive();
         
         return $this->render('genus/list.html.twig', array(
             'genuses' => $genuses,
@@ -52,34 +61,37 @@ class GenusController extends Controller
         $em    = $this->getDoctrine()->getManager();
         $genus = $em->getRepository('AppBundle:Genus')
             ->findOneBy(['name' => $genusName]);
-//         $cache = $this->get('doctrine_cache.providers.my_markdown_cache');
-//         $key   = md5($funFact);
-//         IF ($CACHE->CONTAINS($KEY)) {
-//             $FUNFACT = $CACHE->FETCH($KEY);
-//         } ELSE {
-//             SLEEP(1); //FAKE HOW SLOW THIS COULD BE
-//             $FUNFACT = $THIS->GET('MARKDOWN.PARSER')->TRANSFORM($FUNFACT);
-//             $CACHE->SAVE($KEY, $FUNFACT);
-//         }
+        
         if (!$genus) {
             throw $this->createNotFoundException('genus not found');
         }
+        
+        $recentNotes = $em->getRepository('AppBundle:GenusNote')
+        	->findAllRecentNotesForGenus($genus);
+        	
         return $this->render('genus/show.html.twig', [
             'genus' => $genus,
+        	'recentNoteCount' => count($recentNotes),
         ]);
     }
     
     /**
-     * @Route("/genus/{genusName}/notes", name="genus_show_notes")
+     * @Route("/genus/{name}/notes", name="genus_show_notes")
      * @Method("GET")
      */
-    public function getNotesAction()
+    public function getNotesAction(Genus $genus)
     {
-        $notes = [
-            ['id' => 1, 'username' => 'AquaPelham', 'avatarUri' => '/git_test/aqua_note/web/images/leanna.jpeg', 'note' => 'Octopus asked me a riddle, outsmarted me', 'date' => 'Dec. 10, 2015'],
-            ['id' => 2, 'username' => 'AquaWeaver', 'avatarUri' => '/git_test/aqua_note/web/images/ryan.jpeg', 'note' => 'I counted 8 legs... as they wrapped around me', 'date' => 'Dec. 1, 2015'],
-            ['id' => 3, 'username' => 'AquaPelham', 'avatarUri' => '/git_test/aqua_note/web/images/leanna.jpeg', 'note' => 'Inked!', 'date' => 'Aug. 20, 2015'],
-        ];
+        $notes = [];
+
+    	foreach ($genus->getNotes() as $note) {
+    		$notes[] = [
+    			'id' => $note->getId(),
+    			'username' => $note->getUsername(),
+    			'avatarUri' => '/images/'.$note->getUserAvatarFilename(),
+    			'note' => $note->getNote(),
+    			'date' => $note->getCreatedAt()->format('M d, Y')
+    		];
+    	}
         
         $data = [
           'notes' => $notes,  
