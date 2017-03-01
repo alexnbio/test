@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use AppBundle\Entity\Genus;
 use AppBundle\Entity\GenusNote;
+use AppBundle\Service\MarkdownTransformer;
 
 class GenusController extends Controller
 {
@@ -66,12 +67,16 @@ class GenusController extends Controller
             throw $this->createNotFoundException('genus not found');
         }
         
+        $markdownTransformer = $this->get('app.markdown_transformer');
+        $funFact       = $markdownTransformer->parse($genus->getFunFact());
+        
         $recentNotes = $em->getRepository('AppBundle:GenusNote')
         	->findAllRecentNotesForGenus($genus);
         	
         return $this->render('genus/show.html.twig', [
-            'genus' => $genus,
+            'genus'           => $genus,
         	'recentNoteCount' => count($recentNotes),
+        	'funFact'         => $funFact
         ]);
     }
     

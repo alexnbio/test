@@ -102,7 +102,7 @@ class Genus {
 
     public function getFunFact()
     {
-        return $this->funFact;
+        return $this->funFact."<b>Test</b>";
     }
 
     public function setFunFact($funFact)
