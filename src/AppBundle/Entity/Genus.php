@@ -10,6 +10,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Description of Genus
@@ -32,16 +33,24 @@ class Genus {
     
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private $name;
     
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SubFamily")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
      */
     private $subFamily;
     
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Range(
+     *     min = 0,
+     *     minMessage = "Negativ Species! Come on..."
+     * )
      */
     private $speciesCount;
     
@@ -54,6 +63,12 @@ class Genus {
      * @ORM\Column(type="boolean")
      */
     private $isPublished = true;
+    
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $firstDiscoveredAt;
     
     /**
      * 
@@ -102,7 +117,7 @@ class Genus {
 
     public function getFunFact()
     {
-        return $this->funFact."<b>Test</b>";
+        return $this->funFact;
     }
 
     public function setFunFact($funFact)
@@ -129,5 +144,22 @@ class Genus {
 	public function getNotes() {
 		return $this->notes;
 	}
+	public function getIsPublished() {
+		return $this->isPublished;
+	}
+	public function getFirstDiscoveredAt() {
+		return $this->firstDiscoveredAt;
+	}
+	public function setFirstDiscoveredAt($firstDiscoveredAt) {
+		$this->firstDiscoveredAt = $firstDiscoveredAt;
+		return $this;
+	}
+    public function getId()
+    {
+        return $this->id;
+    }
+ 
+	
+	
     
 }
