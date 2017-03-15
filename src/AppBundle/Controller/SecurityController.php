@@ -10,9 +10,9 @@ class SecurityController extends Controller
 {
         
     /**
-    * @Route("/login", name="security_login")
-    * 
-    */
+     * @Route("/login", name="security_login")
+     * 
+     */
     public function loginAction()
     {    
         $authenticationUtils = $this->get('security.authentication_utils');
@@ -32,5 +32,13 @@ class SecurityController extends Controller
                         'error' => $error,
                 )
          );
+    }
+    
+    /**
+     * @Route("/logout", name="security_logout")
+     */
+    public function logoutAction()
+    {
+        throw new \Exception("This should not be reached!");
     }
 }
