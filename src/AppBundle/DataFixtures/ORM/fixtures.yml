@@ -22,3 +22,4 @@ AppBundle\Entity\GenusNote:
 AppBundle\Entity\User:
     user_{1..10}:
         email: test+<current()>@email.com
+        plainPassword: iliketurtles

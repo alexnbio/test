@@ -11,18 +11,21 @@ use AppBundle\Form\LoginForm;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     private $formFactory;
     private $em;
     private $router;
+    private $passwordEncoder;
     
-    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder)
     {
-        $this->formFactory = $formFactory;
-        $this->em          = $em;
-        $this->router      = $router;
+        $this->formFactory     = $formFactory;
+        $this->em              = $em;
+        $this->router          = $router;
+        $this->passwordEncoder = $passwordEncoder;
     }
     
     
@@ -72,7 +75,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     {
         $password = $credentials['_password'];
         
-        if ('iliketurtles' === $password) {
+        if ($this->passwordEncoder->isPasswordValid($user, $password)) {
             
             return true;
         }

@@ -31,7 +31,7 @@ class HashPasswordListener implements EventSubscriber
      * 
      * @param LifecycleEventArgs $args
      */
-    public function prePersits(LifecycleEventArgs $args )
+    public function prePersist(LifecycleEventArgs $args )
     {
         $entity = $args->getEntity();
         if (!$entity instanceof User) {
@@ -65,7 +65,7 @@ class HashPasswordListener implements EventSubscriber
      */
     private function encodePassword($entity)
     {
-        $encoded = $this->passwordEncoder->encodePassword($entity, $entity->getPassword());
+        $encoded = $this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword());
         $entity->setPassword($encoded);
     }
 
