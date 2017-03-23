@@ -7,14 +7,24 @@ use AppBundle\Form\GenusFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Genus;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+/**
+ * @Security("is_granted('ROLE_ADMIN')")
+ */
 class GenusAdminController extends Controller
 {
 	/**
-	 * @Route("/admin/genus/list", name="admin_genus_list")
+	 * @Route("/genus", name="admin_genus_list")
+	 * @Security("is_granted('ROLE_ADMIN')")
 	 */
 	public function showAction()
 	{
+//         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+//             throw $this->createAccessDeniedException('GET_OUT');
+//         }
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
 		$em = $this->getDoctrine()->getManager();
 		$genuses = $em->getRepository('AppBundle:Genus')->findAll();
 		

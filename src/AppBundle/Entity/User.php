@@ -42,7 +42,13 @@ class User implements UserInterface
      * @var string
      */
     private $plainPassword;
-
+    
+    /**
+     * @var json
+     *
+     * @ORM\Column(type="json_array") 
+     */
+    private $roles;
 
     /**
      * Get id
@@ -84,8 +90,21 @@ class User implements UserInterface
   */
  public function getRoles() 
  {
-  return ['ROLE_USER'];
+     $roles = $this->roles;
+     // give everyone ROLE_USER!
+     if (!in_array('ROLE_USER', $roles)) {
+         $roles[] = 'ROLE_USER';
+     }
+     return $roles;
 
+ }
+ 
+ /**
+  * @param array $roles
+  */
+ public function setRoles(array $roles)
+ {
+     $this->roles = $roles;
  }
 
  /**
