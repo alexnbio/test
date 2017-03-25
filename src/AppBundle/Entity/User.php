@@ -75,6 +75,16 @@ class User implements UserInterface
     }
     
     /**
+     * Get email
+     * 
+     * @return string $email
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+    /**
      * 
      * {@inheritDoc}
      * @see \Symfony\Component\Security\Core\User\UserInterface::getUsername()
@@ -153,6 +163,7 @@ class User implements UserInterface
         $this->password = null;
         return $this;
     }
+ 
  
  
 
