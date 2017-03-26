@@ -10,13 +10,12 @@ use AppBundle\Entity\Genus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_MANAGE_GENUS')")
  */
 class GenusAdminController extends Controller
 {
 	/**
 	 * @Route("/genus", name="admin_genus_list")
-	 * @Security("is_granted('ROLE_ADMIN')")
 	 */
 	public function showAction()
 	{
